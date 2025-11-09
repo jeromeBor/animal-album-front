@@ -1,9 +1,38 @@
 import Image from "next/image";
+import Link from "next/link"
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuIndicator,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  NavigationMenuViewport,
+} from "@/components/ui/navigation-menu" 
+
 
 export default function Home() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
+      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-test dark:bg-black sm:items-start ">
+        <NavigationMenu className="absolute top-0 left-0 p-2 ">
+          <NavigationMenuList>
+            <NavigationMenuItem >
+              <NavigationMenuTrigger>Item One</NavigationMenuTrigger>
+              <NavigationMenuContent className="min-w-30 primary1">
+                <NavigationMenuLink className="">Link 1</NavigationMenuLink>
+                <NavigationMenuLink >Link 2</NavigationMenuLink>
+
+              </NavigationMenuContent>
+            </NavigationMenuItem>
+             <NavigationMenuItem >
+              <NavigationMenuLink asChild>
+                <Link href="/docs">Documentation</Link>
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+          </NavigationMenuList>
+        </NavigationMenu>
         <Image
           className="dark:invert"
           src="/next.svg"
