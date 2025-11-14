@@ -1,16 +1,15 @@
-import colors from "tailwindcss/colors";
+import colors from 'tailwindcss/colors';
 
 const config = {
   content: [
-    "./app/**/*.{js,ts,jsx,tsx}",
-    "./components/**/*.{js,ts,jsx,tsx}",
-    "./pages/**/*.{js,ts,jsx,tsx}",
-    "./styles/**/*.{css}",
+    './app/**/*.{js,ts,jsx,tsx}',
+    './components/**/*.{js,ts,jsx,tsx}',
+    './pages/**/*.{js,ts,jsx,tsx}',
+    './styles/**/*.{css}',
   ],
   theme: {
-    extend: {
-      colors: {
-      },
+    colors: {
+      primary: 'red',
     },
   },
   plugins: [],

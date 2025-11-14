@@ -7,16 +7,16 @@ interface NavLink {
 
 export const navLinks: NavLink[] = [
   {
-    title: 'animals',
+    title: 'Animals',
     href: '/animals',
-    sublink: [
-      { title: 'Nox', href: '/1' },
-      { title: 'Nolga', href: '/2' },
-    ],
+    // sublink: [
+    //   { title: 'Nox', href: '/1' },
+    //   { title: 'Nolga', href: '/2' },
+    // ],
   },
   {
     title: 'Owners',
     href: '/owners',
-    sublink: [{ title: 'Jerome', href: '/1' }],
+    // sublink: [{ title: 'Jerome', href: '/1' }],
   },
 ];
