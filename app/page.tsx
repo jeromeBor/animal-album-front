@@ -1,18 +1,4 @@
 import Image from 'next/image';
-import Link from 'next/link';
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuIndicator,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-  NavigationMenuViewport,
-} from '@/components/ui/navigation-menu';
-
-import { navLinks } from '@/lib/nav-config';
-
 export default function Home() {
   return (
     <div
@@ -20,19 +6,6 @@ export default function Home() {
       className="p flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black"
     >
       <main className="px-16sm:items-start flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32">
-        <div className="fixed top-0 left-0 w-full bg-orange-200">
-          {/* <NavigationMenu className="w-full p-2">
-            <NavigationMenuList>
-              {navLinks.map((link) => (
-                <NavigationMenuItem key={link.title}>
-                  <NavigationMenuLink asChild>
-                    <Link href={link.href}>{link.title}</Link>
-                  </NavigationMenuLink>
-                </NavigationMenuItem>
-              ))}
-            </NavigationMenuList>
-          </NavigationMenu> */}
-        </div>
         <Image
           className="dark:invert"
           src="/next.svg"
