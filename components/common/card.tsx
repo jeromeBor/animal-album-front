@@ -56,8 +56,8 @@ export function CommonCard({
           {editText}
         </Button>
         <Button
-          variant="outline"
           className={`w-1/2 ${deleteButtonClassName}`}
+          variant="outline"
           onClick={handleDelete}
         >
           {deleteText}

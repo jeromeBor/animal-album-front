@@ -1,21 +1,18 @@
 // ❌ AUCUN 'use client'; ici ! C'est un Server Component.
-import fetchAnimals from '../../utils/animals'; // Assurez-vous que fetchAnimals n'est pas client-side seulement
+import { getAllAnimals, deleteAnimal, editAnimal } from '../../utils/animals'; // Assurez-vous que fetchAnimals n'est pas client-side seulement
 
 import AnimalList from './AnimalList';
 interface Animal {
   id: number | string;
   name: string;
+  image: string;
   species: string;
   description: string;
 }
 
 // 💡 Le fetching se fait directement et sans hooks.
 async function getAnimalsData(): Promise<Animal[]> {
-  // Si fetchAnimals retourne le tableau directement (comme nous l'avons corrigé)
-  return fetchAnimals();
-  // Si vous utilisez l'API fetch de base:
-  // const res = await fetch('VOTRE_API_URL', { cache: 'no-store' });
-  // return res.json();
+  return getAllAnimals();
 }
 
 export default async function AnimalIndex() {
@@ -25,7 +22,6 @@ export default async function AnimalIndex() {
   return (
     <main style={{ padding: 24 }}>
       <h1>Animals</h1>
-      <p>Welcome to the animal album. Add, view, and manage animals here.</p>
 
       <AnimalList initialAnimals={animals} />
       {/* {animals.map((a) => (

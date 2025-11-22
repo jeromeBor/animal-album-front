@@ -53,7 +53,7 @@ export default function RootLayout({
             </NavigationMenuList>
           </NavigationMenu>
         </div>
-        {children}
+        <main className="pt-16">{children}</main>
       </body>
     </html>
   );
