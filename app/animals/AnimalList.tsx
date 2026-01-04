@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useOptimistic, useCallback, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { CommonCard } from '@/components/common/card';
 
@@ -12,35 +12,54 @@ interface Animal {
 }
 
 interface AnimalListProps {
-  // Les données initiales sont passées par le Server Component
   initialAnimals: Animal[];
 }
 
-export default function AnimalIndex({ initialAnimals }: AnimalListProps) {
-  const [displayedAnimals, setDisplayedAnimals] = useState(initialAnimals);
+export default function AnimalList({ initialAnimals }: AnimalListProps) {
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
-  const editHandler = (id: number | string) => {
-    const path = `animals/edit/${id}`;
-    // TODO: implement edit logic (e.g., open modal, redirect to edit page)
-    router.push(path);
-  };
+  // 1️⃣ UTILISATION DE USEOPTIMISTIC
+  // On définit l'état optimiste : par défaut, ce sont nos animaux initiaux.
+  const [optimisticAnimals, removeOptimisticAnimal] = useOptimistic(
+    initialAnimals,
+    (state, idToRemove: number | string) => {
+      // Cette logique s'exécute immédiatement côté client
+      return state.filter((animal) => animal.id !== idToRemove);
+    }
+  );
 
-  const deleteHandler = (id: number | string) => {
-    setDisplayedAnimals(displayedAnimals.filter((animal) => animal.id !== id));
-  };
+  // 2️⃣ USECALLBACK POUR LA STABILITÉ
+  // On mémorise la fonction pour qu'elle ne change pas d'adresse mémoire inutilement
+  const handleEdit = useCallback(
+    (id: string | number) => {
+      router.push(`/animals/edit/${id}`);
+    },
+    [router]
+  );
+
+  const handleDelete = useCallback(
+    (id: string | number) => {
+      startTransition(async () => {
+        // On retire l'animal visuellement avant la réponse du serveur
+        removeOptimisticAnimal(id);
+
+        // On lance la vraie action sur la base de données
+        await deleteAnimalAction(id);
+      });
+    },
+    [removeOptimisticAnimal]
+  );
 
   return (
-    <div className="grid grid-cols-4 gap-4">
-      {displayedAnimals.map((a) => (
+    <div className={`grid grid-cols-4 gap-4 ${isPending ? 'opacity-80' : ''}`}>
+      {' '}
+      {optimisticAnimals.map((animal) => (
         <CommonCard
-          key={a.id}
-          title={a.name}
-          subtitle={a.species}
-          description={a.description}
-          handleDelete={() => deleteHandler(a.id)}
-          handleEdit={() => editHandler(a.id)}
-          customClassNames={{}}
+          key={animal.id}
+          animal={animal} // ✅ On passe l'objet entier
+          onEdit={handleEdit}
+          onDelete={handleDelete}
         />
       ))}
     </div>

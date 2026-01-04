@@ -7,62 +7,59 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-
-interface CustomClassNames {
-  // Chaque clé doit être un objet de style CSS valide
-  cardClassName?: string;
-  editButtonClassName?: string;
-  deleteButtonClassName?: string;
-}
+import { memo } from 'react';
+import { Animal } from '@/types/animal';
 
 type Props = {
-  title?: string;
-  image?: string;
-  subtitle?: string;
-  description?: string;
-  handleEdit?: () => void;
-  handleDelete?: () => void;
-  editText?: string;
-  deleteText?: string;
-  customClassNames: CustomClassNames;
+  animal: Animal;
+  onEdit?: (id: string | number) => void;
+  onDelete?: (id: string | number) => void;
+  customClassNames?: {
+    cardClassName?: string;
+    editButtonClassName?: string;
+    deleteButtonClassName?: string;
+  };
 };
 
-export function CommonCard({
-  title,
-  description,
-  image,
-  subtitle,
-  handleEdit,
-  handleDelete,
-  editText = 'Edit',
-  deleteText = 'Delete',
-  customClassNames = {},
-}: Props) {
-  const {
-    cardClassName = '',
-    editButtonClassName = '',
-    deleteButtonClassName = '',
-  } = customClassNames;
+export const CommonCard = memo(
+  ({
+    animal,
+    onEdit = () => {},
+    onDelete = () => {},
+    customClassNames = {},
+  }: Props) => {
+    const {
+      cardClassName = '',
+      editButtonClassName = '',
+      deleteButtonClassName = '',
+    } = customClassNames;
 
-  return (
-    <Card className={`w-full max-w-sm ${cardClassName}`}>
-      <CardHeader>
-        <CardTitle>{title}</CardTitle>
-        <CardDescription>{subtitle}</CardDescription>
-      </CardHeader>
-      <CardContent>{description}</CardContent>
-      <CardFooter className="flex-row gap-2">
-        <Button className={`w-1/2 ${editButtonClassName}`} onClick={handleEdit}>
-          {editText}
-        </Button>
-        <Button
-          className={`w-1/2 ${deleteButtonClassName}`}
-          variant="outline"
-          onClick={handleDelete}
-        >
-          {deleteText}
-        </Button>
-      </CardFooter>
-    </Card>
-  );
-}
+    return (
+      <Card className={cardClassName}>
+        <CardHeader>
+          <CardTitle>{animal.name}</CardTitle>
+          <CardDescription>{animal.species}</CardDescription>
+        </CardHeader>
+        <CardContent>{animal.description}</CardContent>
+        <CardFooter className="flex gap-2">
+          {/* Ici, la carte passe l'ID à la fonction reçue */}
+          <Button
+            className={editButtonClassName}
+            onClick={() => onEdit(animal.id)}
+          >
+            Edit
+          </Button>
+          <Button
+            variant="outline"
+            className={deleteButtonClassName}
+            onClick={() => onDelete(animal.id)}
+          >
+            Delete
+          </Button>
+        </CardFooter>
+      </Card>
+    );
+  }
+);
+
+CommonCard.displayName = 'CommonCard';
