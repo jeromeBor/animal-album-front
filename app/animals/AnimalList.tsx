@@ -2,6 +2,7 @@
 import React, { useOptimistic, useCallback, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { CommonCard } from '@/components/common/card';
+import { deleteAnimalAction } from './actions';
 
 interface Animal {
   id: number | string;

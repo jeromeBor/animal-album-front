@@ -1,24 +1,47 @@
+import { revalidatePath } from 'next/cache';
+
+const API_URL = process.env.API_URL_ENDPOINT;
+
 // Action pour supprimer un animal
 export async function deleteAnimalAction(id: string | number) {
   try {
-    // 1. Logique de suppression réelle en base de données
-    await db.animal.delete({
-      where: { id: id },
+    const response = await fetch(`${API_URL}/animals/${id}`, {
+      method: 'DELETE',
     });
 
-    // 2. MISE À JOUR DU CACHE (Crucial dans Next.js)
-    // Cela dit à Next.js de rafraîchir les données sur la page des animaux
-    revalidatePath('/animals');
+    // Cas 204 No Content (Succès)
+    if (response.status === 204) {
+      revalidatePath('/animals');
+      return { success: true };
+    }
 
-    return { success: true };
+    // Cas 404 (Géré par ton contrôleur)
+    if (response.status === 404) {
+      return { success: false, error: "Cet animal n'existe déjà plus." };
+    }
+
+    // Autres erreurs (500, etc.)
+    throw new Error('Erreur serveur');
   } catch (error) {
-    console.error('Erreur suppression:', error);
-    throw new Error('Impossible de supprimer cet animal.');
+    console.error('Erreur Action:', error);
+    return { success: false, error: 'Impossible de joindre le serveur.' };
   }
 }
 
-// Action pour éditer un animal
-export async function updateAnimalAction(id: string | number, data: any) {
-  // ... logique d'update ...
-  revalidatePath('/animals');
+export async function updateAnimalAction(id: string | number, data: object) {
+  try {
+    const response = await fetch(`${process.env.API_URL}/animals/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+
+    if (response.ok) {
+      revalidatePath('/animals');
+      return { success: true };
+    }
+  } catch (error) {
+    console.error('Erreur update:', error);
+    return { success: false };
+  }
 }
