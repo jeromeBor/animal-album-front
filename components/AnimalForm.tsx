@@ -2,7 +2,8 @@
 
 import { useForm } from 'react-hook-form';
 import { useTransition } from 'react';
-import { createAnimalAction } from '../../actions';
+import { createAnimalAction, updateAnimalAction } from '../app/animals/actions';
+import { Animal, AnimalDTO } from '../app/animals/services';
 import {
   Form,
   FormControl,
@@ -14,35 +15,35 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 
-// 1. Définition des types de données du formulaire (le plus simple possible)
-interface AnimalFormData {
-  name: string;
-  birthdate: string;
-  description: string;
-  // L'image sera gérée plus tard si tu veux faire de l'upload
+interface AnimalFormProps {
+  initialData?: Animal | null;
 }
 
-// 2. Le composant est maintenant très simple et utilise seulement useForm
-export default function AnimalForm() {
+export default function AnimalForm({ initialData }: AnimalFormProps) {
   const [isPending, startTransition] = useTransition();
   // 3. Initialisation du Formulaire : on utilise l'interface AnimalFormData
-  const form = useForm<AnimalFormData>({
+  const form = useForm<AnimalDTO>({
     defaultValues: {
-      name: '',
-      birthdate: '',
-      description: '',
+      name: initialData?.name || '',
+      birthdate: initialData?.birthdate
+        ? initialData.birthdate.split('T')[0]
+        : '', // Format YYYY-MM-DD
+      description: initialData?.description || '',
     },
   });
 
-  function onSubmit(values: AnimalFormData) {
+  async function onSubmit(values: AnimalDTO) {
     startTransition(async () => {
-      const result = await createAnimalAction(values);
+      const result = initialData?.id
+        ? await updateAnimalAction(initialData.id, values)
+        : await createAnimalAction(values);
 
       if (result.errorMessage) {
+        // Ici, tu pourrais utiliser un toast.error(result.errorMessage)
         alert(result.errorMessage);
       } else {
-        alert('Animal enregistré !');
-        form.reset();
+        alert(initialData ? 'Animal mis à jour !' : 'Animal créé !');
+        if (!initialData) form.reset();
       }
     });
   }
